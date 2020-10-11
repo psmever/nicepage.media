@@ -1,0 +1,17 @@
+{
+    "name": "sm/nicepage.media",
+    "type": "project",
+    "description": "Nicepage Site Media Project",
+    "authors": [
+        {
+            "name": "psmever",
+            "email": "psmever@gmail.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "App\\": "App/"
+        }
+    }
+}

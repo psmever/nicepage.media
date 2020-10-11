@@ -1,0 +1,11 @@
+/public/storage
+/vendor
+.env
+
+# Editor
+.vscode
+.DS_Store
+.idea
+
+# test controller
+App/Http/TestController.php
