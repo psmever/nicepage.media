@@ -2,7 +2,6 @@
 use App\Route\Route;
 use App\Http\ImageController;
 
-
 require __DIR__ .'/../vendor/autoload.php';
 
 define('BASEPATH','/');
@@ -12,16 +11,13 @@ Route::add('/phpinfo', function() {
 });
 
 Route::add('/image-upload', function() {
-    ImageController::start();
+    $task = new ImageController();
+
+    $task::start();
+
+    return [];
+
 }, 'post');
-
-
-
-
-
-
-
-
 
 
 Route::run(BASEPATH);
