@@ -3,11 +3,16 @@
 namespace App\Http;
 
 use App\Http\BaseController;
+use App\Traits\Databases;
 
 class ImageController extends BaseController
 {
+    use Databases;
+
     public function __construct()
     {
+        Databases::init();
+
         $check = self::checkHeader();
         if ($check['state'] === false) {
             return BaseController::serverResponse($check, 403);
@@ -16,6 +21,7 @@ class ImageController extends BaseController
 
     public static function start()
     {
+
         $newfileBasename = BaseController::uuidSecure();
 
         $MediaCateogry = BaseController::$MediaCategory;
@@ -58,6 +64,25 @@ class ImageController extends BaseController
 
                 if (move_uploaded_file($fileTmpPath, $dest_path)) {
                     $uploadFileURL = "http://" . $_SERVER["HTTP_HOST"] . $dest_url;
+
+                    $result = Databases::insertNicapageMediaFiles([
+                        'category' => $MediaCateogry,
+                        'dest_path' => $uploadFileDestpath,
+                        'file_name' => $newFileName,
+                        'original_name' => $fileName,
+                        'file_type' => $fileType,
+                        'file_size' => $fileSize,
+                        'file_extension' => $fileExtension,
+                    ]);
+
+                    if($result['state'] == false) {
+                        BaseController::serverResponse([
+                            'state' => false,
+                            'message' => '처리중 문제가 발생 했습니다. (004)',
+                            'error' => $result['error'],
+                        ], 500);
+                    }
+
                     BaseController::serverResponse([
                         'state' => true,
                         'data' => [

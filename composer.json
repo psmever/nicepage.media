@@ -9,7 +9,8 @@
         }
     ],
     "require": {
-        "vlucas/phpdotenv": "^5.2"
+        "vlucas/phpdotenv": "^5.2",
+        "thingengineer/mysqli-database-class": "dev-master"
     },
     "autoload": {
         "psr-4": {
