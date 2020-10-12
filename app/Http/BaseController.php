@@ -16,7 +16,7 @@ class BaseController
         return "baseTest";
     }
 
-    public static function checkHeader()
+    public static function checkHeader() : array
     {
 
         $headers = apache_request_headers();
@@ -28,21 +28,21 @@ class BaseController
         if($ClientToken == NULL || $ClientToken != $_ENV['CLIENC_KEY']) {
             return [
                 'state' => false,
-                'message' => '클라인트 정보가 존대 하지 않습니다.'
+                'message' => '클라인트 정보가 존재 하지 않습니다.'
             ];
         }
 
         if($mediaCategory == NULL) {
             return [
                 'state' => false,
-                'message' => '미디어 정보가 없습니다.'
+                'message' => '미디어 정보가 존재 하지 않습니다.'
             ];
         }
 
         if($mediaFile == NULL) {
             return [
                 'state' => false,
-                'message' => '미디어 파일이 없습니다.'
+                'message' => '미디어 파일이 존재 하지 않습니다.'
             ];
         }
 
