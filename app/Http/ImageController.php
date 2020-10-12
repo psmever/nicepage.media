@@ -16,13 +16,11 @@ class ImageController extends BaseController
 
     public static function start()
     {
-        // print_r($_SERVER);
         $newfileBasename = BaseController::uuidSecure();
 
         $MediaCateogry = BaseController::$MediaCategory;
         $MediaFile = BaseController::$MediaFile;
 
-        $message = '';
         if (isset($MediaFile['error']) && $MediaFile['error'] === UPLOAD_ERR_OK) {
             // get details of the uploaded file
             $fileTmpPath = $MediaFile['tmp_name'];
@@ -60,23 +58,18 @@ class ImageController extends BaseController
 
                 if (move_uploaded_file($fileTmpPath, $dest_path)) {
                     $uploadFileURL = "http://" . $_SERVER["HTTP_HOST"] . $dest_url;
-
                     BaseController::serverResponse([
                         'state' => true,
                         'data' => [
                             'media_url' => $uploadFileURL,
                             'dest_path' => $uploadFileDestpath,
                             'new_file_name' => $newFileName,
-
-
                             'original_name' => $fileName,
                             'file_type' => $fileType,
                             'file_size' => $fileSize,
                             'file_extension' => $fileExtension,
                         ]
-
                     ], 201);
-
                 } else {
                     BaseController::serverResponse([
                         'state' => false,
@@ -84,7 +77,6 @@ class ImageController extends BaseController
                     ], 500);
                 }
             } else {
-
                 BaseController::serverResponse([
                     'state' => false,
                     'message' => '처리중 문제가 발생 했습니다. (002)',
@@ -92,7 +84,6 @@ class ImageController extends BaseController
                 ], 400);
             }
         } else {
-
             BaseController::serverResponse([
                 'state' => false,
                 'message' => '처리중 문제가 발생 했습니다. (001)',
