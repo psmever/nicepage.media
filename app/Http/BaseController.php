@@ -3,8 +3,6 @@ namespace App\Http;
 
 class BaseController
 {
-    const CLIENT_TOKEN = "L2Ntcy1jb250ZW50L3VwbG9hZHMvMjAyMC8wOS8xMA==_gubun_2f7eea82-cb39-4934-b39e-811500acef1d";
-
     public static $MediaCategory;
     public static $MediaFile;
 
@@ -27,7 +25,7 @@ class BaseController
         $mediaCategory = isset($_POST['media_category']) && $_POST['media_category'] ? trim($_POST['media_category']) : NULL;
         $mediaFile = isset($_FILES['media_file']) && $_FILES['media_file'] ? $_FILES['media_file'] : NULL;
 
-        if($ClientToken == NULL || $ClientToken != self::CLIENT_TOKEN) {
+        if($ClientToken == NULL || $ClientToken != $_ENV['CLIENC_KEY']) {
             return [
                 'state' => false,
                 'message' => '클라인트 정보가 존대 하지 않습니다.'

@@ -42,6 +42,7 @@ class ImageController extends BaseController
             if (in_array($fileExtension, $allowedfileExtensions)) {
                 // directory in which the uploaded file will be moved
                 $uploadFileDir = $_SERVER["DOCUMENT_ROOT"] . "/storage/{$MediaCateogry}/" . $newSubDir;
+                $uploadFileDestpath = "/storage/{$MediaCateogry}/" . $newSubDir;
                 $uploadFileURL = "/storage/{$MediaCateogry}/" . $newSubDir;
 
                 if(!is_dir($uploadFileDir)){
@@ -57,13 +58,23 @@ class ImageController extends BaseController
                 $dest_path = $uploadFileDir . "/" . $newFileName;
                 $dest_url = $uploadFileURL . "/" . $newFileName;
 
-
                 if (move_uploaded_file($fileTmpPath, $dest_path)) {
                     $uploadFileURL = "http://" . $_SERVER["HTTP_HOST"] . $dest_url;
 
                     BaseController::serverResponse([
                         'state' => true,
-                        'media_url' => $uploadFileURL,
+                        'data' => [
+                            'media_url' => $uploadFileURL,
+                            'dest_path' => $uploadFileDestpath,
+                            'new_file_name' => $newFileName,
+
+
+                            'original_name' => $fileName,
+                            'file_type' => $fileType,
+                            'file_size' => $fileSize,
+                            'file_extension' => $fileExtension,
+                        ]
+
                     ], 201);
 
                 } else {

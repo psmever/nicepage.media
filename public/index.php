@@ -2,9 +2,9 @@
 use App\Route\Route;
 use App\Http\ImageController;
 
-require __DIR__ .'/../vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
-define('BASEPATH','/');
+require __DIR__ . '/../app/bootstrap.php';
 
 Route::add('/phpinfo', function() {
     phpinfo();
@@ -18,7 +18,6 @@ Route::add('/image-upload', function() {
     return [];
 
 }, 'post');
-
 
 Route::run(BASEPATH);
 ?>
