@@ -21,6 +21,10 @@ class BaseController
 
         $headers = apache_request_headers();
 
+
+        // print_r($headers);
+
+
         $ClientToken = isset($headers['Client-Token']) && $headers['Client-Token'] ? trim($headers['Client-Token']) : NULL;
         $mediaCategory = isset($_POST['media_category']) && $_POST['media_category'] ? trim($_POST['media_category']) : NULL;
         $mediaFile = isset($_FILES['media_file']) && $_FILES['media_file'] ? $_FILES['media_file'] : NULL;

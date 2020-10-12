@@ -1,4 +1,6 @@
 <?php
+error_reporting(0);
+
 use App\Route\Route;
 use App\Http\ImageController;
 

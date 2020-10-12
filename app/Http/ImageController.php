@@ -49,58 +49,68 @@ class ImageController extends BaseController
                 $uploadFileDestpath = "/storage/{$MediaCateogry}/" . $newSubDir;
                 $uploadFileURL = "/storage/{$MediaCateogry}/" . $newSubDir;
 
-                if(!is_dir($uploadFileDir)){
-                    if(!mkdir($uploadFileDir, 0777, true)) {
+                try {
+
+                    if(!is_dir($uploadFileDir)){
+                        if(!mkdir($uploadFileDir, 0777, true)) {
+                            BaseController::serverResponse([
+                                'state' => false,
+                                'message' => '처리중 문제가 발생 했습니다. (005)',
+                            ], 500);
+                        }
+                    }
+
+                    $dest_path = $uploadFileDir . "/" . $newFileName;
+                    $dest_url = $uploadFileURL . "/" . $newFileName;
+
+                    if (move_uploaded_file($fileTmpPath, $dest_path)) {
+                        $uploadFileURL = "http://" . $_SERVER["HTTP_HOST"] . $dest_url;
+
+                        // FIXME 2020-10-12 13:31 오라클 클라우드에서 mysql 접속이 안되기 떄문에 API 에서 처리 하기로.
+                        // $result = Databases::insertNicapageMediaFiles([
+                        //     'category' => $MediaCateogry,
+                        //     'dest_path' => $uploadFileDestpath,
+                        //     'file_name' => $newFileName,
+                        //     'original_name' => $fileName,
+                        //     'file_type' => $fileType,
+                        //     'file_size' => $fileSize,
+                        //     'file_extension' => $fileExtension,
+                        // ]);
+
+                        // if($result['state'] == false) {
+                        //     BaseController::serverResponse([
+                        //         'state' => false,
+                        //         'message' => '처리중 문제가 발생 했습니다. (004)',
+                        //         'error' => $result['error'],
+                        //     ], 500);
+                        // }
+
+                        BaseController::serverResponse([
+                            'state' => true,
+                            'data' => [
+                                'media_url' => $uploadFileURL,
+                                'dest_path' => $uploadFileDestpath,
+                                'new_file_name' => $newFileName,
+                                'original_name' => $fileName,
+                                'file_type' => $fileType,
+                                'file_size' => $fileSize,
+                                'file_extension' => $fileExtension,
+                            ]
+                        ], 201);
+                    } else {
                         BaseController::serverResponse([
                             'state' => false,
                             'message' => '처리중 문제가 발생 했습니다. (004)',
                         ], 500);
-                        return;
                     }
-                }
 
-                $dest_path = $uploadFileDir . "/" . $newFileName;
-                $dest_url = $uploadFileURL . "/" . $newFileName;
-
-                if (move_uploaded_file($fileTmpPath, $dest_path)) {
-                    $uploadFileURL = "http://" . $_SERVER["HTTP_HOST"] . $dest_url;
-
-                    // FIXME 2020-10-12 13:31 오라클 클라우드에서 mysql 접속이 안되기 떄문에 API 에서 처리 하기로.
-                    // $result = Databases::insertNicapageMediaFiles([
-                    //     'category' => $MediaCateogry,
-                    //     'dest_path' => $uploadFileDestpath,
-                    //     'file_name' => $newFileName,
-                    //     'original_name' => $fileName,
-                    //     'file_type' => $fileType,
-                    //     'file_size' => $fileSize,
-                    //     'file_extension' => $fileExtension,
-                    // ]);
-
-                    // if($result['state'] == false) {
-                    //     BaseController::serverResponse([
-                    //         'state' => false,
-                    //         'message' => '처리중 문제가 발생 했습니다. (004)',
-                    //         'error' => $result['error'],
-                    //     ], 500);
-                    // }
-
-                    BaseController::serverResponse([
-                        'state' => true,
-                        'data' => [
-                            'media_url' => $uploadFileURL,
-                            'dest_path' => $uploadFileDestpath,
-                            'new_file_name' => $newFileName,
-                            'original_name' => $fileName,
-                            'file_type' => $fileType,
-                            'file_size' => $fileSize,
-                            'file_extension' => $fileExtension,
-                        ]
-                    ], 201);
-                } else {
+                } catch (\Exception $exception){
                     BaseController::serverResponse([
                         'state' => false,
                         'message' => '처리중 문제가 발생 했습니다. (003)',
+                        'error' => $exception->getMessage()
                     ], 500);
+                    return;
                 }
             } else {
                 BaseController::serverResponse([
