@@ -45,7 +45,13 @@ class ImageController extends BaseController
                 $uploadFileURL = "/storage/{$MediaCateogry}/" . $newSubDir;
 
                 if(!is_dir($uploadFileDir)){
-                    mkdir($uploadFileDir, 0755);
+                    if(!mkdir($uploadFileDir, 0777, true)) {
+                        BaseController::serverResponse([
+                            'state' => false,
+                            'message' => '처리중 문제가 발생 했습니다. (004)',
+                        ], 500);
+                        return;
+                    }
                 }
 
                 $dest_path = $uploadFileDir . "/" . $newFileName;
@@ -61,10 +67,9 @@ class ImageController extends BaseController
                     ], 201);
 
                 } else {
-
                     BaseController::serverResponse([
                         'state' => false,
-                        'message' => '처리중 문제가 발생 했습니다. (001)',
+                        'message' => '처리중 문제가 발생 했습니다. (003)',
                     ], 500);
                 }
             } else {
@@ -79,7 +84,7 @@ class ImageController extends BaseController
 
             BaseController::serverResponse([
                 'state' => false,
-                'message' => '처리중 문제가 발생 했습니다. (003)',
+                'message' => '처리중 문제가 발생 했습니다. (001)',
                 'error' => $_FILES['image']['error']
             ], 400);
         }
