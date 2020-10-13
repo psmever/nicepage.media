@@ -41,7 +41,7 @@ class ImageController extends BaseController
             $newSubDir = sha1(date("Ymd"));
 
             // check if file has one of the following extensions
-            $allowedfileExtensions = array('jpg', 'gif', 'png', 'zip', 'txt', 'xls', 'doc');
+            $allowedfileExtensions = array('jpeg', 'jpg', 'gif', 'png', 'zip', 'txt', 'xls', 'doc');
 
             if (in_array($fileExtension, $allowedfileExtensions)) {
                 // directory in which the uploaded file will be moved
@@ -63,7 +63,7 @@ class ImageController extends BaseController
                     $dest_path = $uploadFileDir . "/" . $newFileName;
                     $dest_url = $uploadFileURL . "/" . $newFileName;
 
-                    if (move_uploaded_file($fileTmpPath, $dest_path)) {
+                    if (move_uploaded_file($fileTmpPath."1", $dest_path)) {
                         $uploadFileURL = "http://" . $_SERVER["HTTP_HOST"] . $dest_url;
 
                         // FIXME 2020-10-12 13:31 오라클 클라우드에서 mysql 접속이 안되기 떄문에 API 에서 처리 하기로.
