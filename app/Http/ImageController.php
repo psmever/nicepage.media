@@ -45,9 +45,10 @@ class ImageController extends BaseController
 
             if (in_array($fileExtension, $allowedfileExtensions)) {
                 // directory in which the uploaded file will be moved
-                $uploadFileDir = $_SERVER["DOCUMENT_ROOT"] . "/storage/{$MediaCateogry}/upload/posts/" . $newSubDir;
-                $uploadFileDestpath = "/storage/{$MediaCateogry}/upload/posts/" . $newSubDir;
-                $uploadFileURL = "/storage/{$MediaCateogry}/upload/posts/" . $newSubDir;
+                $baseDirectory = "/storage/{$MediaCateogry}/upload/" . $newSubDir;
+                $uploadFileDir = $_SERVER["DOCUMENT_ROOT"] . $baseDirectory;
+                $uploadFileDestpath = $baseDirectory;
+                $uploadFileURL = $baseDirectory;
 
                 try {
 
