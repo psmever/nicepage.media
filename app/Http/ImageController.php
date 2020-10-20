@@ -65,7 +65,7 @@ class ImageController extends BaseController
                     $dest_url = $uploadFileURL . "/" . $newFileName;
 
                     if (move_uploaded_file($fileTmpPath, $dest_path)) {
-                        $uploadFileURL = "http://" . $_SERVER["HTTP_HOST"] . $dest_url;
+                        $uploadFileURL = PROTOCOL . $_SERVER["HTTP_HOST"] . $dest_url;
 
                         // FIXME 2020-10-12 13:31 오라클 클라우드에서 mysql 접속이 안되기 떄문에 API 에서 처리 하기로.
                         // $result = Databases::insertNicapageMediaFiles([
