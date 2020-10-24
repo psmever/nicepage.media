@@ -60,7 +60,7 @@ class ImageController extends BaseController
                     $dest_path = $uploadFileDir . "/" . $newFileName;
                     $dest_url = $uploadFileURL . "/" . $newFileName;
 
-                    $resizeResult = BaseController::imageResize($fileTmpPath, $dest_path, 300, 400);
+                    $resizeResult = BaseController::imageResize($fileTmpPath, $dest_path, 1024, 768);
 
                     if($resizeResult['state'] == true) {
                         $uploadFileURL = PROTOCOL . $_SERVER["HTTP_HOST"] . $dest_url;
@@ -85,8 +85,6 @@ class ImageController extends BaseController
                         ], 500);
                         return;
                     }
-
-
 
                 } catch (\Exception $exception){
                     BaseController::serverResponse([
