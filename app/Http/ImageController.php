@@ -21,14 +21,13 @@ class ImageController extends BaseController
 
     public static function start()
     {
-
         $newfileBasename = BaseController::uuidSecure();
 
         $MediaCateogry = BaseController::$MediaCategory;
         $MediaFile = BaseController::$MediaFile;
 
+
         if (isset($MediaFile['error']) && $MediaFile['error'] === UPLOAD_ERR_OK) {
-            // get details of the uploaded file
             $fileTmpPath = $MediaFile['tmp_name'];
             $fileName = $MediaFile['name'];
             $fileSize = $MediaFile['size'];
@@ -36,15 +35,12 @@ class ImageController extends BaseController
             $fileNameCmps = explode(".", $fileName);
             $fileExtension = strtolower(end($fileNameCmps));
 
-            // sanitize file-name
             $newFileName = $newfileBasename . '.' . $fileExtension;
             $newSubDir = sha1(date("Ymd"));
 
-            // check if file has one of the following extensions
             $allowedfileExtensions = array('jpeg', 'jpg', 'gif', 'png', 'zip', 'txt', 'xls', 'doc');
 
             if (in_array($fileExtension, $allowedfileExtensions)) {
-                // directory in which the uploaded file will be moved
                 $baseDirectory = "/storage/{$MediaCateogry}/upload/" . $newSubDir;
                 $uploadFileDir = $_SERVER["DOCUMENT_ROOT"] . $baseDirectory;
                 $uploadFileDestpath = $baseDirectory;
@@ -64,28 +60,10 @@ class ImageController extends BaseController
                     $dest_path = $uploadFileDir . "/" . $newFileName;
                     $dest_url = $uploadFileURL . "/" . $newFileName;
 
-                    if (move_uploaded_file($fileTmpPath, $dest_path)) {
+                    $resizeResult = BaseController::imageResize($fileTmpPath, $dest_path, 300, 400);
+
+                    if($resizeResult['state'] == true) {
                         $uploadFileURL = PROTOCOL . $_SERVER["HTTP_HOST"] . $dest_url;
-
-                        // FIXME 2020-10-12 13:31 오라클 클라우드에서 mysql 접속이 안되기 떄문에 API 에서 처리 하기로.
-                        // $result = Databases::insertNicapageMediaFiles([
-                        //     'category' => $MediaCateogry,
-                        //     'dest_path' => $uploadFileDestpath,
-                        //     'file_name' => $newFileName,
-                        //     'original_name' => $fileName,
-                        //     'file_type' => $fileType,
-                        //     'file_size' => $fileSize,
-                        //     'file_extension' => $fileExtension,
-                        // ]);
-
-                        // if($result['state'] == false) {
-                        //     BaseController::serverResponse([
-                        //         'state' => false,
-                        //         'message' => '처리중 문제가 발생 했습니다. (004)',
-                        //         'error' => $result['error'],
-                        //     ], 500);
-                        // }
-
                         BaseController::serverResponse([
                             'state' => true,
                             'data' => [
@@ -98,12 +76,17 @@ class ImageController extends BaseController
                                 'file_extension' => $fileExtension,
                             ]
                         ], 201);
+                        return;
                     } else {
                         BaseController::serverResponse([
                             'state' => false,
                             'message' => '처리중 문제가 발생 했습니다. (004)',
+                            'error' => $resizeResult['error']
                         ], 500);
+                        return;
                     }
+
+
 
                 } catch (\Exception $exception){
                     BaseController::serverResponse([

@@ -10,7 +10,8 @@
     ],
     "require": {
         "vlucas/phpdotenv": "^5.2",
-        "thingengineer/mysqli-database-class": "dev-master"
+        "thingengineer/mysqli-database-class": "dev-master",
+        "intervention/image": "^2.5"
     },
     "autoload": {
         "psr-4": {

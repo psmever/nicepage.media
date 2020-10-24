@@ -1,6 +1,9 @@
 <?php
 namespace App\Http;
 
+// https://github.com/Intervention/image
+use Intervention\Image\ImageManagerStatic as Image;
+
 class BaseController
 {
     public static $MediaCategory;
@@ -18,12 +21,7 @@ class BaseController
 
     public static function checkHeader() : array
     {
-
         $headers = apache_request_headers();
-
-
-        // print_r($headers);
-
 
         $ClientToken = isset($headers['Client-Token']) && $headers['Client-Token'] ? trim($headers['Client-Token']) : NULL;
         $mediaCategory = isset($_POST['media_category']) && $_POST['media_category'] ? trim($_POST['media_category']) : NULL;
@@ -50,10 +48,8 @@ class BaseController
             ];
         }
 
-
         BaseController::$MediaCategory = $mediaCategory;
         BaseController::$MediaFile = $mediaFile;
-
 
         return [
             'state' => true
@@ -110,5 +106,46 @@ class BaseController
 
         return sprintf('%08s-%04s-%04x-%04x-%012s',
             $time_low, $time_mid, $time_hi_and_version, $clock_seq_hi_and_reserved, $node);
+    }
+
+    public static function imageResize(String $sourceFilePath, String $tagetFilePath, Int $Width, Int $Height)
+    {
+        try {
+
+            Image::configure(array('driver' => 'imagick'));
+
+            list($fileWidth, $fileHeight) = getimagesize($sourceFilePath);
+
+            if ($Width > $fileWidth && $Height > $fileHeight) {
+                move_uploaded_file($sourceFilePath, $tagetFilePath);
+                return [
+                    'state' => true
+                ];
+            }
+
+            $r = $fileWidth / $fileHeight;
+
+            if ($Width / $Height > $r) {
+                $newwidth = $Height * $r;
+                $newheight = $Height;
+            } else {
+                $newheight = $Width / $r;
+                $newwidth = $Width;
+            }
+
+            $img = Image::make($sourceFilePath);
+            $img->resize($newwidth, $newheight);
+            $img->save($tagetFilePath);
+
+        } catch (\Exception $exception){
+            return [
+                'state' => false,
+                'error' => $exception->getMessage()
+            ];
+        }
+
+        return [
+            'state' => true
+        ];
     }
 }
