@@ -1,4 +1,6 @@
 /public/storage
+/public/assets
+
 /vendor
 .env
 
